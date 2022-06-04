@@ -1,0 +1,132 @@
+= Git
+
+Для эмуляции работы команды, необходимо работать в паре.
+
+* Выполнить в паре все *Specification of tasks* приведенные ниже.
+* Можно использовать *IDE* или текстовый редактор, но Git-команды выполнять ТОЛЬКО в терминале.
+* *Specification of task* представляет собой последовательность действий.
+* Для удобства будет использоваться следующее именование:
+** `(1)` - первый разработчик
+** `(2)` - второй разработчик
+* После того как задание выполнено, разработчики меняются ролями и проделывают то же самое еще раз.
+
+WARNING: В случае, если отсутствует напарник, работу в команде можно эмулировать с помощью работы в двух разных директориях. Например: `/home/developer-1/dev` и `/home/developer-2/dev`
+
+== Precondition
+
+* Настройте Git для вашего проекта используя команды приведенные ниже, но со своими значениями.
+
+** На личном компьютере:
+
+    git config --global user.email "your_email@example.com"
+    git config --global user.name "Firstname Lastname"
+    git config --global core.editor "nano -w"
+
+** На компьютере, который могут использовать другие пользователи, эти операции нужно проделывать для КАЖДОГО НОВОГО repository:
+
+    git config --local user.email "your_email@example.com"
+    git config --local user.name "Firstname Lastname"
+    git config --local core.editor "nano -w"
+
+WARNING: Specification of task 1, 2 и частично 3 можно выполнять параллельно и разработчику (1), и разработчику (2).
+
+== Specification of task 1: инициализация проекта.
+
+* (1) создает директорию с названием проекта в рабочей директории (т.е. `/home/your_lastname/dev`). Для именования проекта использовать стиль *kebab-case*. Например: `rakovets-git-workshop`
+* (1) переходит в директорию с проектом.
+* (1) инициализирует ее как git-repository с помощью команды: `git init`
+
+== Specification of task 2: первый commit.
+
+* (1) создаёт в локальном репозитории файл `.gitignore` со следующим содержимым:
+
+    # IntelliJ IDEA files
+    .idea/
+    *.iml
+
+* (1) добавляет файл в *staging area* (`git add ${pathfiles}`, где `${pathfiles}` - путь к файлам, которые необходимо добавить (через пробел)).
+* (1) делает *commit* (`git commit -m "${commit-message}"`, где `${commit-message}` - сообщение для *commit*).
+
+== Specification of task 3: работа с remote repository.
+
+* (1) создает *public repository* на Git-hosting. Желательно, что бы имя проекта совпадало с именем репозитория.
+* (1) дает доступ к repository, разработчику (2).
+* (1) связываем связываем local и remote repository (`git remote add origin ${repository-link}`)
+* (1) делает *push* всех изменений (`git push`).
+* (2) делают локальную копию проекта (`git clone ${repository-link}`, где `${repository-link}` - ссылка для *repository*).
+
+WARNING: Действия, описанные выше, разработчик обычно проделывает один раз, когда только приступает к работе с проектом. Ниже пойдут действия, которые он проделывает ежедневно в процессе работы.
+
+== Specification of task 4: обновление проекта.
+
+* (2) создаёт в локальном репозитории структуру простейшего java-проекта (директория `src` и в ней класс `Main`).
+* (2) добавляет файл в *staging area*.
+* (2) делает *commit*.
+* (2) делает *push* всех изменений.
+* (1) скачивает изменения, произошедшие в *remote repository* (`git fetch`).
+* (1) делает *merge* в *local repository* все изменения произошедшие в *remote repository* (`git merge`).
+
+IMPORTANT: `git pull` ~ `git fetch` + `git merge`
+
+NOTE: Результат: *local repository* у (1) и (2) должны быть идентичны.
+
+== Specification of task 5: решаем merge-conflicts.
+
+* (1) меняет класс `Main`.
+* (1) делает *commit*.
+* (1) делает *push*.
+* (2) меняет те же самые строки в класс `Main`.
+* (2) делает *commit*.
+* (2) делает *pull*.
+
+WARNING: При выполнении команды `pull` произойдет ошибка, так как возник *merge-conflicts*.
+
+* (2) решает *merge-conflicts*.
+* (2) делает *commit*.
+* (2) делает *push*.
+* (1) делает *pull*.
+
+NOTE: Результат: *local repository* у (1) и (2) должны быть идентичны.
+
+== Specification of task 6: слияние веток.
+
+* (2) создаёт *branch* с именем `second-branch` (`git branch ${branch-name}`, где `${branch-name}` - имя для *branch*).
+* (2) переключается в `second-branch` *branch*  (`git checkout ${branch-name}`, где `${branch-name}` - имя нужного *branch*)
+* (2) вносит изменения в класс `Main`.
+* (2) делает *commit*.
+* (2) делает *push*.
+* (1) скачивает изменения, произошедшие в *remote repository*.
+* (1) делает *merge* изменений из ветви `second-branch` в *branch* `master`.
+* (1) делает *push*.
+* (2) переключается на `master`.
+* (2) делает *pull*.
+
+NOTE: Результат: *local repository* у (1) и (2) должны быть идентичны.
+
+== Specification of task 7: создаем PR/MR.
+
+* (1) создаёт *branch* с именем `pull-branch`.
+* (1) вносит изменения в класс `Main`.
+* (1) делает *commit*.
+* (1) делает *push*.
+* (1) создаёт *Merge Request*/*Pull Request* на *merge* ветки `pull-branch` в `master`.
+* (2) одобряет *MR*/*PR*.
+* (2) осуществляет *merge*.
+* (1) и (2) переключаются на `master`.
+* (1) и (2) делают *pull*.
+
+NOTE: Результат: *local repository* у (1) и (2) должны быть идентичны.
+
+== Specification of task 8: вытягивание commit.
+
+* (2) создаёт *branch* с именем `many-commits`.
+* (2) делает в ней несколько *commits*.
+* (2) делает *push*.
+* (1) скачивает изменения, произошедшие в *remote repository*.
+* (1) затем открывает *log* для *commits* (`git log`).
+* (1) делает *cherry-pick* в `master` любого *commit*, сделанного (2) (`git cherry-pick`).
+* (1) делает *push*.
+* (2) переключается на `master`.
+* (2) делает *pull*.
+
+NOTE: Результат: *local repository* у (1) и (2) должны быть идентичны.
